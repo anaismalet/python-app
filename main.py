@@ -7,7 +7,7 @@ src="https://www.googletagmanager.com/gtag/js?id=LGCXZQVT0R"></script>
  window.dataLayer = window.dataLayer || [];
  function gtag(){dataLayer.push(arguments);}
  gtag('js', new Date());
- gtag('config', ' YOUR_GA_CODE');
+ gtag('config', 'LGCXZQVT0R');
 </script>
  """
  return prefix_google + "Hello World"
