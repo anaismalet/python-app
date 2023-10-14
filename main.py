@@ -1,5 +1,6 @@
 from flask import Flask, request
 import logging
+import requests
 
 # Flask app
 app = Flask(__name__)
@@ -59,3 +60,7 @@ def log():
     """
 
     return log_msg + browser_log + textbox_form
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
