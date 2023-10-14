@@ -1,6 +1,9 @@
 from flask import Flask, request, render_template
 import logging
 import requests
+import os
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest
 
 # Flask app
 app = Flask(__name__)
@@ -29,7 +32,7 @@ def hello_world():
 def log():
 
     # Print a message in Python
-    log_msg = "Welcome in the Logger page"
+    log_msg = "ANAÏS MALET, LAB 2 DIGITAL TRACES<br><br>Welcome in the Logger page "
     app.logger.info(log_msg)
 
     if request.method == 'POST':
@@ -55,7 +58,7 @@ def log():
     # Text box
     textbox_form = """
     <form method="POST">
-        <label for="textbox"><br><br>Text Box :</label><br>
+        <label for="textbox"><br><br>Write something you want to display in the console :</label><br>
         <input type="text" id="textbox" name="textbox"><br><br>
         <input type="submit" value="Submit">
     </form>
@@ -64,21 +67,26 @@ def log():
     # Buttons for google request, google analytics request and cookies request
     button_msg = "<br>Google Requests :<br><br>"
     google_button = """
+    Let's do a goole research :
     <form method="GET" action="/google-request">
         <input type="submit" value="Google">
     </form>"""
-    google_analytics_button = """<form method="GET" action="/google-analytics-request">
+    google_analytics_button = """Let's go to Google Analytics : <form method="GET" action="/google-analytics-request">
         <input type="submit" value="Google Analytics Dashboard">
     </form>
         """
-    google_cookies_button = """<form method="GET" action="/google-cookies-request">
+    google_cookies_button = """Let's get the cookies informations from google analytics : <form method="GET" action="/google-cookies-request">
         <input type="submit" value="Google cookies">
     </form>
     """
+    google_analytics_api = """Let's get the visitors number on this website from Google Analytics API : <form method="GET" action="/api-google-analytics-data">
+        <input type="submit" value="Google Analytics API">
+    </form>
+        """
 
-    return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button
+    return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button + google_analytics_api
 
-# Google request route
+# Google request
 @app.route('/google-request', methods=['GET'])
 def google_request():
     # Question
@@ -92,7 +100,7 @@ def google_request():
     except requests.exceptions.RequestException as e:
         return f"Error making Google request: {str(e)}"
     
-# Google analytics request route
+# Google analytics request
 @app.route('/google-analytics-request', methods=['GET'])
 def google_analytics_request():
     # Question
@@ -107,7 +115,7 @@ def google_analytics_request():
     except requests.exceptions.RequestException as e:
         return f"Error making Google Analytics request: {str(e)}"
 
-# Google cookies request route
+# Google cookies request
 @app.route('/google-cookies-request', methods=['GET'])
 def google_cookies_request():
 
@@ -125,6 +133,45 @@ def google_cookies_request():
     
     except requests.exceptions.RequestException as e:
         return f"Error making Google Analytics Cookies request: {str(e)}"
+
+# Fetch data from Google analytics api
+@app.route('/api-google-analytics-data', methods=['GET'])
+def api_google_analytics_data():
+
+    # Set the path to the Google Cloud credentials file
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'lab-2-data-traces-3cceca2c0880.json'
+    # Define Google Analytics property ID, and a period of time with starting date and ending date
+    GA_property_ID = '407449812'
+    starting_date = "28daysAgo"
+    ending_date = "yesterday"
+
+    # Initialize a client for the Google Analytics Data API
+    client = BetaAnalyticsDataClient()
+    
+    # Function that gets the number of visitors
+    def get_visitors_number(client, property_id):
+        # Define the request to retrieve active users metric
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            date_ranges=[{"start_date": starting_date, "end_date": ending_date}],
+            metrics=[{"name": "activeUsers"}]
+        )
+
+        response = client.run_report(request)
+        # return active_users_metric
+        return response
+
+    # Get the visitor number using the function
+    response = get_visitors_number(client, GA_property_ID)
+
+    # Check if there's a valid response with data
+    if response and response.row_count > 0:
+        # Extract the value of the active users metric from the response
+        metric_value = response.rows[0].metric_values[0].value
+    else:
+        metric_value = "N/A"  # Handle the case where there is no data
+
+    return f'Nombre de visiteurs actifs : {metric_value}'
         
 if __name__ == '__main__':
     app.run(debug=True)

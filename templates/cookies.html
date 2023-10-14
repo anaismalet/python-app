@@ -4,10 +4,10 @@
     <title>Affichage des cookies</title>
 </head>
 <body>
-    <h2>Cookies :</h2>
+    <h2>Cookies informations :</h2>
     <ul>
         {% for cookie in cookies %}
-            <li>{{ cookie.name }} : {{ cookie.value }}</li>
+            Cookie name : {{ cookie.name }} <br> Cookie value : {{ cookie.value }}
         {% endfor %}
     </ul>
 </body>
