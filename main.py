@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import logging
 import requests
 
@@ -92,7 +92,7 @@ def google_request():
     except requests.exceptions.RequestException as e:
         return f"Error making Google request: {str(e)}"
     
-# Google request route
+# Google analytics request route
 @app.route('/google-analytics-request', methods=['GET'])
 def google_analytics_request():
     # Question
@@ -100,11 +100,31 @@ def google_analytics_request():
     
     try:
         response = requests.get(google_analytics_url)
-        response.raise_for_status()  
+        response.raise_for_status() # Raise an exception for HTTP errors
+        # Return response from get request
         return response.text
-    # Raise an exception for HTTP errors
+   
     except requests.exceptions.RequestException as e:
         return f"Error making Google Analytics request: {str(e)}"
+
+# Google cookies request route
+@app.route('/google-cookies-request', methods=['GET'])
+def google_cookies_request():
+
+    google_analytics_url = "https://analytics.google.com/analytics/web/?pli=1#/p407459024/reports/intelligenthome"
+    
+    try:
+        response = requests.get(google_analytics_url)
+        response.raise_for_status() # Raise an exception for HTTP errors
+
+        # Retrieve cookies of the response
+        cookies = response.cookies
+
+        # Send cookies to the template for display
+        return render_template('cookies.html', cookies=cookies)
+    
+    except requests.exceptions.RequestException as e:
+        return f"Error making Google Analytics Cookies request: {str(e)}"
         
 if __name__ == '__main__':
     app.run(debug=True)
