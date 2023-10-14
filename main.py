@@ -78,5 +78,20 @@ def log():
 
     return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button
 
+# Google request route
+@app.route('/google-request', methods=['GET'])
+def perform_google_request():
+    # Question
+    google_url = "https://www.google.com/"
+    
+    try:
+        response = requests.get(google_url)
+        response.raise_for_status()  
+        return response.text
+    # Raise an exception for HTTP errors
+    except requests.exceptions.RequestException as e:
+        return f"Error making Google Analytics request: {str(e)}"
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
