@@ -46,7 +46,7 @@ def log():
         # Print a message in the browser console
         browser_log = """
         <script>
-            console.log('Console du web browser : Vous êtes bien connectés à la page des logs');
+            console.log('Console du web browser : You are connected to the logger page');
         </script>
         """
 
@@ -60,6 +60,7 @@ def log():
     """
 
     # Buttons for google request, google analytics request and cookies request
+    button_msg = "Requests buttons :"
     google_button = """
     <form method="GET" action="/google-request">
         <input type="submit" value="Google">
@@ -73,7 +74,7 @@ def log():
     </form>
     """
 
-    return log_msg + browser_log + textbox_form
+    return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button
 
 if __name__ == '__main__':
     app.run(debug=True)
