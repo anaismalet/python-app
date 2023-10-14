@@ -80,7 +80,7 @@ def log():
 
 # Google request route
 @app.route('/google-request', methods=['GET'])
-def perform_google_request():
+def google_request():
     # Question
     google_url = "https://www.google.com/"
     
@@ -90,8 +90,21 @@ def perform_google_request():
         return response.text
     # Raise an exception for HTTP errors
     except requests.exceptions.RequestException as e:
+        return f"Error making Google request: {str(e)}"
+    
+# Google request route
+@app.route('/google-analytics-request', methods=['GET'])
+def google_analytics_request():
+    # Question
+    google_analytics_url = "https://analytics.google.com/analytics/web/?pli=1#/p407459024/reports/intelligenthome"
+    
+    try:
+        response = requests.get(google_analytics_url)
+        response.raise_for_status()  
+        return response.text
+    # Raise an exception for HTTP errors
+    except requests.exceptions.RequestException as e:
         return f"Error making Google Analytics request: {str(e)}"
-    
-    
+        
 if __name__ == '__main__':
     app.run(debug=True)
