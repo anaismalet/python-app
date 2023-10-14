@@ -61,6 +61,18 @@ def log():
 
     return log_msg + browser_log + textbox_form
 
+@app.route('/google-request', methods=['GET'])
+def google_request():
+    # Render a form with a button to make the Google request
+    return """
+    <form method="GET" action="/google-analytics-request">
+        <input type="submit" value="Display Google Analytics Dashboard">
+    </form>
+    <form method="GET" action="/google-cookies-request">
+        <input type="submit" value="Display Cookies">
+    </form>
+    """
+
 
 if __name__ == '__main__':
     app.run(debug=True)
