@@ -27,40 +27,42 @@ def hello_world():
 # Route to logger page
 @app.route("/logger", methods=['GET', 'POST'])
 def log():
+
     # Print a message in Python
-    log_msg = "Logger page"
+    log_msg = "Welcome in the Logger page"
     app.logger.info(log_msg)
 
     if request.method == 'POST':
+
         # Retreiived the text in the text box
         text_from_textbox = request.form['textbox']
 
         # Print a message in the browser console with the text from the text box
         browser_log = f"""
         <script>
-            console.log('Console du web browser : Vous êtes bien connectés à la page des logs');
-            console.log('Texte de la boîte de texte : {text_from_textbox}');
+            console.log('Web browser console : You are connected to the logger page');
+            console.log('Text sent by the textbox : {text_from_textbox}');
         </script>
         """
     else:
         # Print a message in the browser console
         browser_log = """
         <script>
-            console.log('Console du web browser : You are connected to the logger page');
+            console.log('Web browser console : You are connected to the logger page');
         </script>
         """
 
-    # Formulaire HTML avec une boîte de texte
+    # Text box
     textbox_form = """
     <form method="POST">
-        <label for="textbox">Text Box :</label><br>
+        <label for="textbox"><br><br>Text Box :</label><br>
         <input type="text" id="textbox" name="textbox"><br><br>
-        <input type="submit" value="Soumettre">
+        <input type="submit" value="Submit">
     </form>
     """
 
     # Buttons for google request, google analytics request and cookies request
-    button_msg = "Requests buttons :"
+    button_msg = "<br>Google Requests :<br><br>"
     google_button = """
     <form method="GET" action="/google-request">
         <input type="submit" value="Google">
