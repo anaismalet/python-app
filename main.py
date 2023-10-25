@@ -179,6 +179,7 @@ def api_google_analytics_data():
 
     return f'Active users of your app : {metric_value}'
 
+# It should works but my computer does not handle pytrends importation so I had to hide "import pytrend" in commentary
 @app.route('/chart-data')
 def chart_data():
     pytrends = TrendReq(hl='en-US', tz=360)
