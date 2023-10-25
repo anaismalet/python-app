@@ -1,9 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import logging
 import requests
 import os
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import RunReportRequest
+from google.analytics.data_v1beta import RunReportRequest
+#from pytrends.request import TrendReq
 
 # Flask app
 app = Flask(__name__)
@@ -133,7 +134,7 @@ def google_cookies_request():
     
     except requests.exceptions.RequestException as e:
         return f"Error making Google Analytics Cookies request: {str(e)}"
-
+    
 # Fetch data from Google analytics api
 @app.route('/api-google-analytics-data', methods=['GET'])
 def api_google_analytics_data():
@@ -171,7 +172,11 @@ def api_google_analytics_data():
     else:
         metric_value = "N/A"  # Handle the case where there is no data
 
-    return f'Nombre de visiteurs actifs : {metric_value}'
-        
+    return f'Active users of your app : {metric_value}'
+    
+    
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
