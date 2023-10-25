@@ -33,7 +33,7 @@ def hello_world():
 def log():
 
     # Print a message in Python
-    log_msg = "ANAÏS MALET, LAB 2 DIGITAL TRACES<br><br>Welcome in the Logger page "
+    log_msg = "ANAÏS MALET, LAB 2 et 3 DIGITAL TRACES<br><br>Welcome in the Logger page "
     app.logger.info(log_msg)
 
     if request.method == 'POST':
@@ -84,8 +84,13 @@ def log():
         <input type="submit" value="Google Analytics API">
     </form>
         """
+    
+    google_trend_button = """Let's display the trend comparison time serie between France and Spain from Google trend : <form method="GET" action="/chart-data">
+        <input type="submit" value="Google Trend">
+    </form>
+        """
 
-    return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button + google_analytics_api
+    return log_msg + browser_log + textbox_form + button_msg + google_button + google_analytics_button + google_cookies_button + google_analytics_api + google_trend_button
 
 # Google request
 @app.route('/google-request', methods=['GET'])
@@ -173,10 +178,21 @@ def api_google_analytics_data():
         metric_value = "N/A"  # Handle the case where there is no data
 
     return f'Active users of your app : {metric_value}'
-    
-    
 
+@app.route('/chart-data')
+def chart_data():
+    pytrends = TrendReq(hl='en-US', tz=360)
+    keywords = ["France", "Spain"]
+    pytrends.build_payload(keywords, timeframe='today 12-m', geo='US')
+    interest_over_time_df = pytrends.interest_over_time()
 
+    data = {
+        'dates': interest_over_time_df.index.strftime('%Y-%m-%d').tolist(),
+        'France': interest_over_time_df['France'].tolist(),
+        'Spain': interest_over_time_df['Spain'].tolist()
+    }
+
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
